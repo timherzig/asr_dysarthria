@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/work/herzig/asr_dysarthria/script/evaluate.py", line 41, in <module>
+    main()
+  File "/work/herzig/asr_dysarthria/script/evaluate.py", line 13, in main
+    processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
+  File "/net/work/herzig/asr_dysarthria/script/helper/get_model.py", line 20, in get_model
+    model.to(DEVICE)
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 852, in to
+    return self._apply(convert)
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 530, in _apply
+    module._apply(fn)
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 530, in _apply
+    module._apply(fn)
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 530, in _apply
+    module._apply(fn)
+  [Previous line repeated 2 more times]
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 552, in _apply
+    param_applied = fn(param)
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 850, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+  File "/work/herzig/torch_env/lib/python3.9/site-packages/torch/cuda/__init__.py", line 172, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+cat: /sys/fs/cgroup/devices/herzig_J1130623.1/tasks: No such file or directory
+rmdir: failed to remove ‘/sys/fs/cgroup/devices/herzig_J1130623.1’: No such file or directory
+-- Removal of cgroup failed !
+cat: /sys/fs/cgroup/devices/herzig_J1130623.1/tasks: No such file or directory
+-- PID still in task list: 

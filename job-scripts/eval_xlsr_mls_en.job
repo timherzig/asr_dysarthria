@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N xlsr_eval_mls_en
+#$ -j y
+#$ -o /work/herzig/results/evaluate/xlsr_mls_en.out
+#$ -l h_rt=15000
+#$ -l gpus=1
+#$ -l gpu_mem=8G
+#$ -l ccc=6
+#$ -m e
+#$ -M t.herzig@campus.tu-berlin.de
+
+conda activate /work/herzig/torch_env
+module load cuda/10.1
+python3 /work/herzig/asr_dysarthria/script/evaluate.py -m jonatasgrosman/wav2vec2-large-xlsr-53-english -l en -d mls_en

@@ -22,7 +22,7 @@ def main():
     ds = import_dataset(args.d, args.local)  # Load a list of datasets
 
     training_args = TrainingArguments(
-        output_dir='/home/tim/Documents/training' if args.local else '/work/herzig/training/results',  # output directory
+        output_dir='/home/tim/Documents/training' if args.local else '/work/herzig/results/train',  # output directory
         group_by_length=True,
         per_device_train_batch_size=16,
         gradient_accumulation_steps=2,
