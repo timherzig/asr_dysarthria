@@ -2,6 +2,7 @@ import torch
 
 from helper.dataCollatorCTCWithPadding import DataCollatorCTCWithPadding
 from transformers import Trainer, TrainingArguments
+from datasets import concatenate_datasets
 
 from helper.parser import parse_arguments
 from helper.get_model import get_model
@@ -12,7 +13,6 @@ from metrics.cer import cer
 
 from import_ds.import_dataset import import_dataset
 
-from datasets import concatenate_datasets
 
 
 def main():
