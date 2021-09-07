@@ -14,7 +14,9 @@ from metrics.cer import cer
 
 from import_ds.import_dataset import import_dataset
 
-
+###
+### Following this guide https://huggingface.co/blog/fine-tune-xlsr-wav2vec2
+###
 
 def main():
     args = parse_arguments()
