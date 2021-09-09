@@ -4,7 +4,7 @@ location = '/home/tim/Documents/Datasets/hu_dysarthria_final_data/final_data'
 
 speakers = os.listdir(location)
 
-os.system('ffmpeg -f lavfi -i anullsrc=r=16000:cl=mono -t 0.1 -q:a 9 -acodec libmp3lame 100msSilence.mp3') #('ffmpeg -filter_complex aevalsrc=0 -t 0.1 -ar 16000 100msSilence.mp3')
+os.system('ffmpeg -f lavfi -i anullsrc=r=44100:cl=mono -t 0.1 -q:a 9 -acodec libmp3lame 100msSilence.mp3') #('ffmpeg -filter_complex aevalsrc=0 -t 0.1 -ar 16000 100msSilence.mp3')
 
 for speaker in speakers:
     loc = os.path.join(location, speaker)
@@ -16,5 +16,6 @@ for speaker in speakers:
                 if af.endswith('.mp3'):
                     a = os.path.join(loc, af)
                     a_copy = os.path.join(loc, 'copy_' + af)
-                    print(a_copy)
-                    os.system('ffmpeg -i "concat:100msSilence.mp3|{}|100msSilence.mp3" -c {}'.format(a, a_copy))
+                    command = '\"concat:100msSilence.mp3|{}|100msSilence.mp3\"'.format(a)
+                    #print(command)
+                    os.system('ffmpeg -i {} -c copy {}'.format(command, a_copy))
