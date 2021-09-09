@@ -1,5 +1,6 @@
 import os
 import torch
+import optuna
 import numpy as np
 
 from helper.dataCollatorCTCWithPadding import DataCollatorCTCWithPadding
@@ -51,38 +52,21 @@ def main():
 
         os.mkdir(dir)
 
-        #training_args = TrainingArguments(
-        #    output_dir=dir,
-        #    # output directory
-        #    group_by_length=True,
-        #    per_device_train_batch_size=16,
-        #    gradient_accumulation_steps=2,
-        #    evaluation_strategy='steps',
-        #    num_train_epochs=30,
-        #    fp16=True if not args.local else False,
-        #    save_steps=400,
-        #    eval_steps=400,
-        #    logging_steps=400,
-        #    learning_rate=3e-4,
-        #    warmup_steps=500,
-        #    save_total_limit=2,
-        #)
-        
         training_args = TrainingArguments(
-            output_dir=dir,
-            # output directory
-            group_by_length=True,
-            per_device_train_batch_size=4,
-            gradient_accumulation_steps=1,
-            evaluation_strategy='steps',
-            num_train_epochs=2,
-            fp16=True if not args.local else False,
-            save_steps=3,
-            eval_steps=3,
-            logging_steps=3,
-            learning_rate=3e-4,
-            warmup_steps=0,
-            save_total_limit=2,
+           output_dir=dir,
+           # output directory
+           group_by_length=True,
+           per_device_train_batch_size=8,
+           gradient_accumulation_steps=2,
+           evaluation_strategy='steps',
+           num_train_epochs=30,
+           fp16=True if not args.local else False,
+           save_steps=400,
+           eval_steps=400,
+           logging_steps=400,
+           learning_rate=3e-4,
+           warmup_steps=500,
+           save_total_limit=2,
         )
 
 
