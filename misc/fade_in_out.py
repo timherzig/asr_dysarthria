@@ -1,4 +1,7 @@
 import os
+# import pydub
+
+# Thought: I don't think we should fade in, as it will decrease the volume of the spoken language in the beginning of the clip
 
 location = '/home/tim/Documents/Datasets/hu_dysarthria_final_data/final_data'
 
@@ -9,13 +12,17 @@ os.system('ffmpeg -f lavfi -i anullsrc=r=44100:cl=mono -t 0.1 -q:a 9 -acodec lib
 for speaker in speakers:
     loc = os.path.join(location, speaker)
     if os.path.isdir(loc) and speaker[0] == 'M' or speaker[0] == 'F':
-        loc = os.path.join(loc, 'audio_1')
-        if os.path.isdir(loc):
-            audio_files = os.listdir(loc)
-            for af in audio_files:
-                if af.endswith('.mp3'):
-                    a = os.path.join(loc, af)
-                    a_copy = os.path.join(loc, 'copy_' + af)
-                    command = '\"concat:100msSilence.mp3|{}|100msSilence.mp3\"'.format(a)
-                    #print(command)
-                    os.system('ffmpeg -i {} -c copy {}'.format(command, a_copy))
+        l = os.listdir(loc)
+        print(l)
+        for lo in l:
+            lo = os.path.join(loc, lo)
+            print(lo)
+            if os.path.isdir(lo):
+                audio_files = os.listdir(lo)
+                for af in audio_files:
+                    if af.endswith('.mp3'):
+                        a = os.path.join(lo, af)
+                        a_copy = os.path.join(lo, 'copy_' + af)
+                        command = '\"concat:100msSilence.mp3|{}|100msSilence.mp3\"'.format(a)
+                        #print(command)
+                        os.system('ffmpeg -i {} -c copy {}'.format(command, a_copy))

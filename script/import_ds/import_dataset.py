@@ -16,9 +16,9 @@ def import_dataset(name, local):
             ds = import_torgo('/work/herzig/datasets/torgo/TORGO')
     elif name.lower() == 'hu':
         if local:
-            ds = import_hu('/home/tim/Documents/Datasets/hu_dysarthria/test')
+            ds = import_hu('/home/tim/Documents/Datasets/hu_dysarthria_final_data/final_data')
         else:
-            ds = import_hu('/work/herzig/datasets/hu_test')
+            ds = import_hu('/work/herzig/datasets/hu_dysarthria_final_data/final_data')
     elif name.lower() == 'mls_de':
         if local:
             ds = import_mls_de(
