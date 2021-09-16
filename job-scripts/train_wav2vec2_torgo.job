@@ -3,9 +3,9 @@
 #$ -N wav2vec2_train_torgo
 #$ -j y
 #$ -o /work/herzig/results/train/log/wav2vec2_torgo.out
-#$ -l h_rt=15000
+#$ -l h_rt=30000
 #$ -l gpus=1
-#$ -l gpu_mem=8G
+#$ -l gpu_mem=24G
 #$ -l ccc=6
 #$ -m e
 #$ -M t.herzig@campus.tu-berlin.de
