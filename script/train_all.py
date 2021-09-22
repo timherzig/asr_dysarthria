@@ -1,4 +1,5 @@
 import os
+from optuna import trial
 import torch
 from datetime import date
 import numpy as np
@@ -9,8 +10,6 @@ from datasets import concatenate_datasets
 
 from helper.parser import parse_arguments
 from helper.get_model import get_model
-
-from train_eval import eval
 
 from metrics.wer import wer
 
@@ -87,30 +86,17 @@ def main():
         )
 
         trainer.train()
+        # GOAL: TODO: return wer of final trained model
 
-        print('Evaluation: ' + trainer.evaluate())
-        trainer.log_metrics()
-
-
-    def leave_one_out_evaluation(speaker_datasets, t_args):
-        for speaker_dataset in speaker_datasets:
-            speaker_datasets_wo_cur_speaker = speaker_datasets[:]
-            speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
-            ds_wo_cur_speaker = concatenate_datasets(speaker_datasets_wo_cur_speaker)
-
-            dir = '/home/tim/Documents/training/results/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today(
-            ))) if args.local else '/work/herzig/results/train/model/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today()))
-            
-            ft(ds_wo_cur_speaker, speaker_dataset, dir, t_args)
-
-        # for speaker_dataset in speaker_datasets:
-        #     dir = '/home/tim/Documents/training/results/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today(
-        #     ))) if args.local else '/work/herzig/results/train/model/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today()))
-
-        #     eval(speaker_dataset, dir)
     
-    t_args= {'learning_rate': 3e-4, 'batch_size': 8} # + batch-size (3-10)
-    leave_one_out_evaluation(ds, t_args)
+    t_args= {'learning_rate': 3e-4, 'batch_size': 8}
+
+
+    train_ds = 
+    eval_ds = 
+
+
+    ft(train_ds, eval_ds, t_args)
 
 
 if __name__ == "__main__":

@@ -15,39 +15,30 @@ def speech_file_to_array(x):
 
 def import_hu(location):
     print('Import HU dataset')
-    final_speakers = ['F05', 'M01', 'M02']
     dfs = []
 
-    speakers = os.listdir(location)
+    speakers = os.listdir(location + '/labels')
     
-    for speaker in speakers:
-        if speaker in final_speakers:
-            df_list = []
-            cur_location = os.path.join(location, speaker)
-            in_cur_l = os.listdir(cur_location)
-            for icl in in_cur_l:
-                #tmp_df = pd.DataFrame(columns=['start', 'end', 'duration', 'transcription', 'speech_type', 'quality', 'severity', 'raw_audio', 'id', 'file'])
-                if icl.endswith('.csv'):
-                    if icl.endswith('therapist.csv'):
-                        continue
-                    if icl.endswith('patient.csv'):
-                        tmp_df = pd.read_csv(os.path.join(cur_location, icl))
-                        tmp_df['speech'] = [speech_file_to_array(cur_location + '/' + icl[:-12] + '/' +  x) for x in tmp_df['file']]
-                        df_list.append(tmp_df)
-                    else:
-                        tmp_df = pd.read_csv(os.path.join(cur_location, icl))
-                        tmp_df['speech'] = [speech_file_to_array(cur_location + '/' + icl[:-4] + '/copy_' +  x) for x in tmp_df['file']]
-                        df_list.append(tmp_df)
-            
-            df = pd.concat(df_list)
-            df.drop('start', axis=1, inplace=True)
-            df.drop('end', axis=1, inplace=True)
-            df.drop('duration', axis=1, inplace=True)
-            if 'raw_audio' in df.columns: df.drop('raw_audio', axis=1, inplace=True) 
-            else: df.drop('audio', axis=1, inplace=True)
-            df.drop('file', axis=1, inplace=True)
-            df.rename(columns={'transcription': 'target'}, inplace=True)
+    cnt = 0
+    for csv_file in speakers:
+        if cnt > 2: return dfs
+        cnt += 1
+        speaker_id = csv_file[6:-4]
 
-            dfs.append(df)
+        df = pd.read_csv(location + '/labels/' + csv_file)
+        
+        df['speech'] = [speech_file_to_array(os.path.join(location, x)) for x in df['path']]
+        df['id'] = [speaker_id for x in df['path']]
+
+        df.rename(columns={'transcription': 'target'}, inplace=True)
+
+        df.drop('duration_in_s', axis=1, inplace=True)
+        df.drop('speech_type', axis=1, inplace=True)
+        df.drop('severity', axis=1, inplace=True)
+        df.drop('quality', axis=1, inplace=True)
+        df.drop('audioID', axis=1, inplace=True)
+        df.drop('path', axis=1, inplace=True)
+
+        dfs.append(Dataset.from_pandas(df))
     
     return dfs
