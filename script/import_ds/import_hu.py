@@ -21,7 +21,7 @@ def import_hu(location):
     
     cnt = 0
     for csv_file in speakers:
-        if cnt > 2: return dfs
+        if cnt > 1: return dfs
         cnt += 1
         speaker_id = csv_file[6:-4]
 

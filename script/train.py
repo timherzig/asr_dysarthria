@@ -1,5 +1,6 @@
 import os
 import torch
+import optuna
 from datetime import date
 import numpy as np
 
@@ -49,16 +50,13 @@ def main():
         return batch
 
     def ft(train_ds, eval_ds, dir, t_args):
-        os.makedirs(dir)
-
         training_args = TrainingArguments(
            output_dir=dir,
-           # output directory
            group_by_length=True,
            per_device_train_batch_size=t_args['batch_size'],
            gradient_accumulation_steps=2,
            evaluation_strategy='steps',
-           num_train_epochs=30,
+           num_train_epochs=t_args['epoch'],
            fp16=True if not args.local else False,
            save_steps=400,
            eval_steps=400,
@@ -88,11 +86,23 @@ def main():
 
         trainer.train()
 
-        print('Evaluation: ' + trainer.evaluate())
-        trainer.log_metrics()
+        return float(trainer.evaluate()['eval_wer'])
 
 
-    def leave_one_out_evaluation(speaker_datasets, t_args):
+    def leave_one_out_evaluation(speaker_datasets):
+        t_ds = speaker_datasets[0]
+        e_ds = speaker_datasets[0]
+        dir = ''
+
+        def objective(trail):
+            lr = trail.suggest_loguniform('learning_rate', 1e-5, 1e-1)
+            bs = trail.suggest_int('batch_size', 4, 8, step=4)
+            ep = trail.suggest_int('epoch', 10, 30, step=10)
+
+            t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
+
+            return ft(t_ds, e_ds, dir, t_args)            
+
         for speaker_dataset in speaker_datasets:
             speaker_datasets_wo_cur_speaker = speaker_datasets[:]
             speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
@@ -100,17 +110,18 @@ def main():
 
             dir = '/home/tim/Documents/training/results/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today(
             ))) if args.local else '/work/herzig/results/train/model/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today()))
-            
-            ft(ds_wo_cur_speaker, speaker_dataset, dir, t_args)
+            os.makedirs(dir)
 
-        # for speaker_dataset in speaker_datasets:
-        #     dir = '/home/tim/Documents/training/results/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today(
-        #     ))) if args.local else '/work/herzig/results/train/model/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today()))
+            t_ds = speaker_dataset
+            e_ds = ds_wo_cur_speaker
 
-        #     eval(speaker_dataset, dir)
-    
-    t_args= {'learning_rate': 3e-4, 'batch_size': 8} # + batch-size (3-10)
-    leave_one_out_evaluation(ds, t_args)
+            study = optuna.create_study(direction='minimize')
+            study.optimize(objective,  n_trials=10)
+
+            print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
+
+
+    leave_one_out_evaluation(ds)
 
 
 if __name__ == "__main__":
