@@ -11,8 +11,6 @@ from datasets import concatenate_datasets
 from helper.parser import parse_arguments
 from helper.get_model import get_model
 
-from train_eval import eval
-
 from metrics.wer import wer
 
 from import_ds.import_dataset import import_dataset
@@ -23,6 +21,8 @@ from import_ds.import_dataset import import_dataset
 
 def main():
     args = parse_arguments()
+    if len(args.s) == 0: exit()
+    s = str(args.s).split(' ')
 
     processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
     ds = import_dataset(args.d, args.local)  # Load a list of datasets
@@ -104,21 +104,24 @@ def main():
             return ft(t_ds, e_ds, dir, t_args)            
 
         for speaker_dataset in speaker_datasets:
-            speaker_datasets_wo_cur_speaker = speaker_datasets[:]
-            speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
-            ds_wo_cur_speaker = concatenate_datasets(speaker_datasets_wo_cur_speaker)
+            speaker_dataset[0]['id']
+            if speaker_dataset[0]['id'] in s:
+                print(speaker_dataset[0]['id'])
+                speaker_datasets_wo_cur_speaker = speaker_datasets[:]
+                speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
+                ds_wo_cur_speaker = concatenate_datasets(speaker_datasets_wo_cur_speaker)
 
-            dir = '/home/tim/Documents/training/results/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today(
-            ))) if args.local else '/work/herzig/results/train/model/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today()))
-            os.makedirs(dir)
+                dir = '/home/tim/Documents/training/results/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today(
+                ))) if args.local else '/work/herzig/results/train/model/' + os.path.join(str(args.d), str(speaker_dataset[0]['id']), str(date.today()))
+                os.makedirs(dir)
 
-            t_ds = speaker_dataset
-            e_ds = ds_wo_cur_speaker
+                t_ds = speaker_dataset
+                e_ds = ds_wo_cur_speaker
 
-            study = optuna.create_study(direction='minimize')
-            study.optimize(objective,  n_trials=10)
+                study = optuna.create_study(direction='minimize')
+                study.optimize(objective,  n_trials=10)
 
-            print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
+                print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 
 
     leave_one_out_evaluation(ds)

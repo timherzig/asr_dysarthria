@@ -19,11 +19,8 @@ def import_hu(location):
 
     speakers = os.listdir(location + '/labels')
     
-    cnt = 0
     for csv_file in speakers:
-        if cnt > 1: return dfs
-        cnt += 1
-        speaker_id = csv_file[6:-4]
+        speaker_id = csv_file[:-4]
 
         df = pd.read_csv(location + '/labels/' + csv_file)
         

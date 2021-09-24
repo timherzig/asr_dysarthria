@@ -92,11 +92,11 @@ def main():
     t_args= {'learning_rate': 3e-4, 'batch_size': 8}
 
 
-    train_ds = 
-    eval_ds = 
+    # train_ds = 
+    # eval_ds = 
 
 
-    ft(train_ds, eval_ds, t_args)
+    # ft(train_ds, eval_ds, t_args)
 
 
 if __name__ == "__main__":
