@@ -50,6 +50,7 @@ def main():
         return batch
 
     def ft(train_ds, eval_ds, dir, t_args):
+
         training_args = TrainingArguments(
            output_dir=dir,
            group_by_length=True,
@@ -67,9 +68,9 @@ def main():
         )
 
 
-        eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns(
+        eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(
             ['id', 'target', 'speech'])
-        train_ds = train_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns([
+        train_ds = train_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns([
             'id', 'target', 'speech'])
 
         data_collator = DataCollatorCTCWithPadding(processor=processor, padding=True)
@@ -85,6 +86,11 @@ def main():
         )
 
         trainer.train()
+
+        print('---------------------------------------------------')
+        print('Evaluation: ')
+        print(trainer.evaluate())
+        print('---------------------------------------------------')
 
         return float(trainer.evaluate()['eval_wer'])
 
