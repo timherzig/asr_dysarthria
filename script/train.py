@@ -24,32 +24,58 @@ def main():
     if len(args.s) == 0: exit()
     s = str(args.s).split(' ')
 
-    processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
+    # processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
     ds = import_dataset(args.d, args.local)  # Load a list of datasets
 
-    def compute_metrics(pred):
-        pred_logits = pred.predictions
-        pred_ids = np.argmax(pred_logits, axis=-1)
+    # def compute_metrics(pred):
+    #     pred_logits = pred.predictions
+    #     pred_ids = np.argmax(pred_logits, axis=-1)
 
-        pred.label_ids[pred.label_ids == -100] = processor.tokenizer.pad_token_id
+    #     pred.label_ids[pred.label_ids == -100] = processor.tokenizer.pad_token_id
 
-        pred_str = processor.batch_decode(pred_ids)
-        # we do not want to group tokens when computing the metrics
-        label_str = processor.batch_decode(pred.label_ids, group_tokens=False)
+    #     pred_str = processor.batch_decode(pred_ids)
+    #     # we do not want to group tokens when computing the metrics
+    #     label_str = processor.batch_decode(pred.label_ids, group_tokens=False)
 
-        m_wer = wer(predictions=pred_str, references=label_str)
+    #     m_wer = wer(predictions=pred_str, references=label_str)
 
-        return {"wer": m_wer}
+    #     return {"wer": m_wer}
 
 
-    def prep_dataset(batch):
-        batch["input_values"] = processor(batch["speech"], sampling_rate=16000).input_values
+    # def prep_dataset(batch):
+    #     batch["input_values"] = processor(batch["speech"], sampling_rate=16000).input_values
 
-        with processor.as_target_processor():
-            batch["labels"] = processor(batch["target"]).input_ids
-        return batch
+    #     with processor.as_target_processor():
+    #         batch["labels"] = processor(batch["target"]).input_ids
+    #     return batch
 
     def ft(train_ds, eval_ds, dir, t_args):
+
+        processor, model, device = get_model(
+            args.l, args.m, args.local)  # Load tokenizer and model
+
+        def compute_metrics(pred):
+            pred_logits = pred.predictions
+            pred_ids = np.argmax(pred_logits, axis=-1)
+
+            pred.label_ids[pred.label_ids == -
+                            100] = processor.tokenizer.pad_token_id
+
+            pred_str = processor.batch_decode(pred_ids)
+            # we do not want to group tokens when computing the metrics
+            label_str = processor.batch_decode(pred.label_ids, group_tokens=False)
+
+            m_wer = wer(predictions=pred_str, references=label_str)
+
+            return {"wer": m_wer}
+
+        def prep_dataset(batch):
+            batch["input_values"] = processor(
+                batch["speech"], sampling_rate=16000).input_values
+
+            with processor.as_target_processor():
+                batch["labels"] = processor(batch["target"]).input_ids
+            return batch
 
         training_args = TrainingArguments(
            output_dir=dir,
@@ -125,7 +151,7 @@ def main():
                 e_ds = ds_wo_cur_speaker
 
                 study = optuna.create_study(direction='minimize')
-                study.optimize(objective,  n_trials=10)
+                study.optimize(objective,  n_trials=50)
 
                 print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 
