@@ -10,8 +10,6 @@
 #$ -m e
 #$ -M t.herzig@campus.tu-berlin.de
 
-rm -f /work/herzig/results/train/log/hu/xlsr_M04.out
-touch /work/herzig/results/train/log/hu/xlsr_M04.out
 conda activate /work/herzig/torch_env
 module load cuda/10.1
 python3 /work/herzig/asr_dysarthria/script/train.py -m facebook/wav2vec2-large-xlsr-53-german -l de -d hu -s 'M04'
