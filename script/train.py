@@ -34,7 +34,7 @@ def main():
         # Freeze all layers except the last two
         if args.llo:
             for name, param in model.named_parameters():
-                if not ('22' in name or '23' in name):
+                if not ('lm_head' in name or 'lm_head' in name):
                     param.requires_grad = False
 
         def compute_metrics(pred):
