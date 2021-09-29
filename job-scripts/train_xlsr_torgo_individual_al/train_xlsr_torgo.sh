@@ -1,0 +1,15 @@
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_F01.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_F03.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_F04.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_FC01.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_FC02.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_FC03.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_M01.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_M02.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_M03.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_M04.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_M05.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_MC01.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_MC02.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_MC03.job
+qsub /work/herzig/job-scripts/train/train_xlsr_torgo_individual_al/train_xlsr_torgo_MC04.job

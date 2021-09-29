@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N xlsr_train_torgo_llo_MC04
+#$ -j y
+#$ -o /work/herzig/results/train/log/torgo_llo/MC04.out
+#$ -l h_rt=30000
+#$ -l gpus=2
+#$ -l gpu_mem=64G
+#$ -l ccc=6
+#$ -m e
+#$ -M t.herzig@campus.tu-berlin.de
+
+conda activate /work/herzig/torch_env
+module load cuda/10.1
+python3 /work/herzig/asr_dysarthria/script/train.py -m facebook/wav2vec2-large-960h-lv60-self -l en -d torgo -s 'MC04' -llo True
