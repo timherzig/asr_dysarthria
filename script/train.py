@@ -68,11 +68,11 @@ def main():
            evaluation_strategy='steps',
            num_train_epochs=t_args['epoch'],
            fp16=True if not args.local else False,
-           save_steps=400,
-           eval_steps=400,
-           logging_steps=400,
+           save_steps=500,
+           eval_steps=500,
+           logging_steps=500,
            learning_rate=t_args['learning_rate'],
-           warmup_steps=0,
+           warmup_steps=1000,
            save_total_limit=2,
         )
 
