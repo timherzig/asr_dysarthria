@@ -24,35 +24,18 @@ def main():
     if len(args.s) == 0: exit()
     s = str(args.s).split(' ')
 
-    # processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
     ds = import_dataset(args.d, args.local)  # Load a list of datasets
-
-    # def compute_metrics(pred):
-    #     pred_logits = pred.predictions
-    #     pred_ids = np.argmax(pred_logits, axis=-1)
-
-    #     pred.label_ids[pred.label_ids == -100] = processor.tokenizer.pad_token_id
-
-    #     pred_str = processor.batch_decode(pred_ids)
-    #     # we do not want to group tokens when computing the metrics
-    #     label_str = processor.batch_decode(pred.label_ids, group_tokens=False)
-
-    #     m_wer = wer(predictions=pred_str, references=label_str)
-
-    #     return {"wer": m_wer}
-
-
-    # def prep_dataset(batch):
-    #     batch["input_values"] = processor(batch["speech"], sampling_rate=16000).input_values
-
-    #     with processor.as_target_processor():
-    #         batch["labels"] = processor(batch["target"]).input_ids
-    #     return batch
 
     def ft(train_ds, eval_ds, dir, t_args):
 
         processor, model, device = get_model(
             args.l, args.m, args.local)  # Load tokenizer and model
+
+        # Freeze all layers except the last two
+        if args.llo:
+            for name, param in model.named_parameters():
+                if not ('22' in name or '23' in name):
+                    param.requires_grad = False
 
         def compute_metrics(pred):
             pred_logits = pred.predictions
@@ -128,7 +111,7 @@ def main():
 
         def objective(trail):
             lr = trail.suggest_loguniform('learning_rate', 1e-5, 1e-1)
-            bs = trail.suggest_int('batch_size', 4, 8, step=4)
+            bs = trail.suggest_int('batch_size', 4, 8, step=4) if args.d == 'hu' else trail.suggest_int('batch_size', 16, 32, step=4)
             ep = trail.suggest_int('epoch', 10, 30, step=10)
 
             t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
@@ -151,7 +134,7 @@ def main():
                 e_ds = ds_wo_cur_speaker
 
                 study = optuna.create_study(direction='minimize')
-                study.optimize(objective,  n_trials=50)
+                study.optimize(objective,  n_trials=30)
 
                 print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 

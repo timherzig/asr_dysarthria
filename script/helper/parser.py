@@ -9,5 +9,6 @@ def parse_arguments():
     parser.add_argument('-m', type=str, help='Model')
     parser.add_argument('-s', type=str, help='Names of speakers for fine-tuning in \" \"')
     parser.add_argument('-local', type=bool, default=False, help='True if local')
+    parser.add_argument('-llo', type=bool, default=False, help='True if only last two layers should be changed')
 
     return parser.parse_args()
