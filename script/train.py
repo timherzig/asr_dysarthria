@@ -126,8 +126,8 @@ def main():
                 speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
                 ds_wo_cur_speaker = concatenate_datasets(speaker_datasets_wo_cur_speaker)
 
-                dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + '_llo' if args.llo else '_al') if args.local else '/work/herzig/results/train/model/' + os.path.join(
-                    str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + '_llo' if args.llo else '_al')
+                dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/results/train/model/' + os.path.join(
+                    str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al'))
                 os.makedirs(dir)
 
                 t_ds = speaker_dataset
