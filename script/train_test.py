@@ -48,7 +48,12 @@ def main():
             # we do not want to group tokens when computing the metrics
             label_str = processor.batch_decode(pred.label_ids, group_tokens=False)
 
-            m_wer = wer(predictions=pred_str, references=label_str, chunk_size=500) * 100
+            print('Pred:')
+            print(pred_str)
+            print('Ref:')
+            print(label_str)
+
+            m_wer = wer(predictions=pred_str, references=label_str)
 
             return {"wer": m_wer}
 
@@ -72,7 +77,7 @@ def main():
            eval_steps=500,
            logging_steps=500,
            learning_rate=t_args['learning_rate'],
-           warmup_steps=1000,
+           warmup_steps=100,
            save_total_limit=2,
         )
 
@@ -134,7 +139,7 @@ def main():
                 t_ds = ds_wo_cur_speaker
 
                 study = optuna.create_study(direction='minimize')
-                study.optimize(objective,  n_trials=30)
+                study.optimize(objective,  n_trials=2)
 
                 print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 
