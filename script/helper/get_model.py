@@ -9,6 +9,7 @@ def get_model(lang, model, local):
         DEVICE: str = 'cuda'
 
     model = Wav2Vec2ForCTC.from_pretrained(MODEL_ID, force_download=True)
+    model.config.mask_time_prob = 0
     model.to(DEVICE)
     processor = Wav2Vec2Processor.from_pretrained(MODEL_ID, force_download=True)
 

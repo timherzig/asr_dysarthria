@@ -54,7 +54,7 @@ def main():
 
         def prep_dataset(batch):
             batch["input_values"] = processor(
-                batch["speech"], sampling_rate=16000).input_values
+                batch["speech"], sampling_rate=16_000).input_values
 
             with processor.as_target_processor():
                 batch["labels"] = processor(batch["target"]).input_ids
