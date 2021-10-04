@@ -25,6 +25,11 @@ def main():
     s = str(args.s).split(' ')
 
     ds = import_dataset(args.d, args.local)  # Load a list of datasets
+    sds = []
+
+    if(len(args.sd) > 0):
+        sds = import_dataset(args.sd, args.local)
+
 
     def ft(train_ds, eval_ds, dir, t_args):
 
@@ -68,11 +73,11 @@ def main():
            evaluation_strategy='steps',
            num_train_epochs=t_args['epoch'],
            fp16=True if not args.local else False,
-           save_steps=500,
-           eval_steps=500,
-           logging_steps=500,
+           save_steps=400,
+           eval_steps=400,
+           logging_steps=400,
            learning_rate=t_args['learning_rate'],
-           warmup_steps=1000,
+           warmup_steps=500,
            save_total_limit=2,
         )
 
@@ -104,14 +109,14 @@ def main():
         return float(trainer.evaluate()['eval_wer'])
 
 
-    def leave_one_out_evaluation(speaker_datasets):
+    def leave_one_out_evaluation(speaker_datasets, second_speaker_datasets):
         t_ds = speaker_datasets[0]
         e_ds = speaker_datasets[0]
         dir = ''
 
         def objective(trail):
             lr = trail.suggest_loguniform('learning_rate', 1e-5, 1e-1)
-            bs = trail.suggest_int('batch_size', 4, 8, step=4) if args.d == 'hu' else trail.suggest_int('batch_size', 16, 32, step=4)
+            bs = trail.suggest_int('batch_size', 16, 32, step=4) if (args.d == 'torgo' or args.sd == 'torgo') else trail.suggest_int('batch_size', 4, 8, step=4)
             ep = trail.suggest_int('epoch', 10, 30, step=10)
 
             t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
@@ -122,13 +127,16 @@ def main():
             speaker_dataset[0]['id']
             if speaker_dataset[0]['id'] in s:
                 print(speaker_dataset[0]['id'])
-                speaker_datasets_wo_cur_speaker = speaker_datasets[:]
+                speaker_datasets_wo_cur_speaker = list(speaker_datasets[:])
                 speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
+                list(speaker_datasets_wo_cur_speaker).extend(second_speaker_datasets)
                 ds_wo_cur_speaker = concatenate_datasets(speaker_datasets_wo_cur_speaker)
 
                 dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/results/train/model/' + os.path.join(
                     str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al'))
-                os.makedirs(dir)
+                
+                if not os.path.exists(dir):
+                    os.makedirs(dir)
 
                 e_ds = speaker_dataset
                 t_ds = ds_wo_cur_speaker
@@ -136,10 +144,10 @@ def main():
                 study = optuna.create_study(direction='minimize')
                 study.optimize(objective,  n_trials=30)
 
-                print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
+                print('Patient ' + e_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 
 
-    leave_one_out_evaluation(ds)
+    leave_one_out_evaluation(ds, sds)
 
 
 if __name__ == "__main__":

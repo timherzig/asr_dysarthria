@@ -141,7 +141,7 @@ def main():
                 study = optuna.create_study(direction='minimize')
                 study.optimize(objective,  n_trials=2)
 
-                print('Patient ' + t_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
+                print('Patient ' + e_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 
 
     leave_one_out_evaluation(ds)

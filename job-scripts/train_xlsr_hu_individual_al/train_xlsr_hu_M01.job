@@ -3,13 +3,13 @@
 #$ -N xlsr_train_hu_al_M01
 #$ -j y
 #$ -o /work/herzig/results/train/log/hu_al/M01.out
-#$ -l h_rt=20000
+#$ -l h_rt=35000
 #$ -l gpus=1
-#$ -l gpu_mem=20G
+#$ -l gpu_mem=16G
 #$ -l ccc=6
 #$ -m e
 #$ -M t.herzig@campus.tu-berlin.de
 
 conda activate /work/herzig/torch_env
 module load cuda/10.1
-python3 /work/herzig/asr_dysarthria/script/train.py -m facebook/wav2vec2-large-xlsr-53-german -l de -d hu -s 'M01'
+python3 /work/herzig/asr_dysarthria/script/train.py -m /work/herzig/models/wav2vec2-large-xlsr-53-german/ -l de -d hu -s 'M01'
