@@ -4,7 +4,7 @@
 #$ -j y
 #$ -o /work/herzig/results/train/log/hu_torgo_al/torgo_F01.out
 #$ -l h_rt=40000
-#$ -l gpus=2
+#$ -l gpus=1
 #$ -l gpu_mem=24G
 #$ -l ccc=6
 #$ -m e
