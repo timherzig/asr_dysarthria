@@ -5,7 +5,7 @@
 #$ -o /work/herzig/results/train/log/hu_torgo_al/hu_F04.out
 #$ -l h_rt=40000
 #$ -l gpus=2
-#$ -l gpu_mem=64G
+#$ -l gpu_mem=24G
 #$ -l ccc=6
 #$ -m e
 #$ -M t.herzig@campus.tu-berlin.de
