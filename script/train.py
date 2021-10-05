@@ -131,6 +131,8 @@ def main():
                 speaker_datasets_wo_cur_speaker.remove(speaker_dataset)
                 list(speaker_datasets_wo_cur_speaker).extend(second_speaker_datasets)
                 ds_wo_cur_speaker = concatenate_datasets(speaker_datasets_wo_cur_speaker)
+                
+                # TODO: change to desired output directory
 
                 dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/results/train/model/' + os.path.join(
                     str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al'))
