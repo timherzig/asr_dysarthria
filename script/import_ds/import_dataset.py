@@ -9,7 +9,7 @@ def import_dataset(name, local):
     
     if name.lower() == 'torgo':
         if local:
-            ds = import_torgo('/home/tim/Documents/Datasets/torgo/test')
+            ds = import_torgo('/home/tim/Documents/Datasets/torgo/TORGO')
         else:
             ds = import_torgo('/work/herzig/datasets/torgo/TORGO')
     elif name.lower() == 'hu':
