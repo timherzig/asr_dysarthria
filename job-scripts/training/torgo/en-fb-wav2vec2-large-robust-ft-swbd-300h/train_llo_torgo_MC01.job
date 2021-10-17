@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N train-en-fb-wav2vec2-large-robust-ft-swbd-300h-llo-MC01
+#$ -j y
+#$ -o /work/herzig/results/train/log/torgo/en-fb-wav2vec2-large-robust-ft-swbd-300h/MC01_llo.out
+#$ -l h_rt=60000
+#$ -l gpus=2
+#$ -l gpu_mem=22G
+#$ -l ccc=6
+#$ -m e
+#$ -M t.herzig@campus.tu-berlin.de
+
+conda activate /work/herzig/torch_env
+module load cuda/10.1
+python3 /work/herzig/asr_dysarthria/script/train.py -m /work/herzig/models/en-fb-wav2vec2-large-robust-ft-swbd-300h/ -l en -d torgo -s 'MC01' -llo True

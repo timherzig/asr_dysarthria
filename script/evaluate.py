@@ -24,7 +24,7 @@ def main():
         return batch
 
     for dataset in ds:
-        result = dataset.map(evaluate, batched=True, batch_size=4)
+        result = dataset.map(evaluate, batched=True, batch_size=8)
 
         predictions = [x.upper() for x in result['pred_text']]
         references = [x.upper() for x in result['target']]

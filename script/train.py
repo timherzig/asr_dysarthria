@@ -1,4 +1,5 @@
 import os
+import re
 import torch
 import optuna
 from datetime import date
@@ -29,7 +30,6 @@ def main():
 
     if(len(args.sd) > 0):
         sds = import_dataset(args.sd, args.local)
-
 
     def ft(train_ds, eval_ds, dir, t_args):
 
@@ -115,8 +115,8 @@ def main():
         dir = ''
 
         def objective(trail):
-            lr = trail.suggest_loguniform('learning_rate', 1e-5, 1e-1)
-            bs = trail.suggest_int('batch_size', 12, 16, step=4) if (args.d == 'torgo' or args.sd == 'torgo') else trail.suggest_int('batch_size', 4, 8, step=4)
+            lr = trail.suggest_loguniform('learning_rate', 1e-5, 3e-4)
+            bs = trail.suggest_int('batch_size', 8, 16, step=4) if (args.d == 'torgo' or args.sd == 'torgo') else trail.suggest_int('batch_size', 4, 8, step=4)
             ep = trail.suggest_int('epoch', 10, 30, step=10)
 
             t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
