@@ -1,4 +1,5 @@
 from .import_hu import import_hu
+from .import_ua import import_ua
 from .import_torgo import import_torgo
 
 # returns a list of datasets, if len == 1, then speaker independent, if len > 1 then speaker dependent
@@ -17,5 +18,10 @@ def import_dataset(name, local):
             ds = import_hu('/home/tim/Documents/Datasets/hu_final')
         else:
             ds = import_hu('/work/herzig/datasets/hu_final')
+    elif name.lower() == ('uaspeech' or 'ua'):
+        if local:
+            ds = import_ua('/home/tim/Documents/Datasets/uaspeech')
+        else:
+            ds = import_ua('/work/herzig/datasets/uaspeech')
 
     return ds
