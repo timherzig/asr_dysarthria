@@ -10,34 +10,34 @@ def import_dataset(name, local, test_train):
         ds = []
         if name.lower() == 'torgo':
             if local:
-                ds = import_torgo('/home/tim/Documents/Datasets/torgo/TORGO', test_train=False)
+                ds = import_torgo('/home/tim/Documents/Datasets/torgo/TORGO', False)
             else:
-                ds = import_torgo('/work/herzig/datasets/torgo/TORGO', test_train=False)
+                ds = import_torgo('/work/herzig/datasets/torgo/TORGO', False)
         elif name.lower() == 'hu':
             if local:
-                ds = import_hu('/home/tim/Documents/Datasets/hu_final', test_train=False)
+                ds = import_hu('/home/tim/Documents/Datasets/hu_final', False)
             else:
-                ds = import_hu('/work/herzig/datasets/hu_final', test_train=False)
+                ds = import_hu('/work/herzig/datasets/hu_final', False)
         elif name.lower() == 'uaspeech' or name.lower() == 'ua':
             if local:
-                ds = import_ua('/home/tim/Documents/Datasets/uaspeech', test_train=False)
+                ds = import_ua('/home/tim/Documents/Datasets/uaspeech', False)
             else:
-                ds = import_ua('/work/herzig/datasets/uaspeech', test_train=False)
+                ds = import_ua('/work/herzig/datasets/uaspeech', False)
         return ds
 
     if test_train:
         if name.lower() == 'torgo':
             if local:
-                return import_torgo('/home/tim/Documents/Datasets/torgo/TORGO', test_train=True)
+                return import_torgo('/home/tim/Documents/Datasets/torgo/TORGO', True)
             else:
-                return import_torgo('/work/herzig/datasets/torgo/TORGO', test_train=True)
+                return import_torgo('/work/herzig/datasets/torgo/TORGO', True)
         elif name.lower() == 'hu':
             if local:
-                return import_hu('/home/tim/Documents/Datasets/hu_final', test_train=True)
+                return import_hu('/home/tim/Documents/Datasets/hu_final', True)
             else:
-                return import_hu('/work/herzig/datasets/hu_final', test_train=True)
+                return import_hu('/work/herzig/datasets/hu_final', True)
         elif name.lower() == 'uaspeech' or name.lower() == 'ua':
             if local:
-                return import_ua('/home/tim/Documents/Datasets/uaspeech', test_train=True)
+                return import_ua('/home/tim/Documents/Datasets/uaspeech', True)
             else:
-                return import_ua('/work/herzig/datasets/uaspeech', test_train=True)
+                return import_ua('/work/herzig/datasets/uaspeech', True)
