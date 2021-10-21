@@ -13,29 +13,34 @@ def speech_file_to_array(x):
     return speech_array
 
 
-def import_hu(location):
+def import_hu(location, test_train):
     print('Import HU dataset')
-    dfs = []
-
-    speakers = os.listdir(location + '/labels')
     
-    for csv_file in speakers:
-        speaker_id = csv_file[:-4]
+    if not test_train:
+        dfs = []
 
-        df = pd.read_csv(location + '/labels/' + csv_file)
+        speakers = os.listdir(location + '/labels')
         
-        df['speech'] = [speech_file_to_array(os.path.join(location, x)) for x in df['path']]
-        df['id'] = [speaker_id for x in df['path']]
+        for csv_file in speakers:
+            speaker_id = csv_file[:-4]
 
-        df.rename(columns={'transcription': 'target'}, inplace=True)
+            df = pd.read_csv(location + '/labels/' + csv_file)
+            
+            df['speech'] = [speech_file_to_array(os.path.join(location, x)) for x in df['path']]
+            df['id'] = [speaker_id for x in df['path']]
 
-        df.drop('duration_in_s', axis=1, inplace=True)
-        df.drop('speech_type', axis=1, inplace=True)
-        df.drop('severity', axis=1, inplace=True)
-        df.drop('quality', axis=1, inplace=True)
-        df.drop('audioID', axis=1, inplace=True)
-        df.drop('path', axis=1, inplace=True)
+            df.rename(columns={'transcription': 'target'}, inplace=True)
 
-        dfs.append(Dataset.from_pandas(df))
-    
-    return dfs
+            df.drop('duration_in_s', axis=1, inplace=True)
+            df.drop('speech_type', axis=1, inplace=True)
+            df.drop('severity', axis=1, inplace=True)
+            df.drop('quality', axis=1, inplace=True)
+            df.drop('audioID', axis=1, inplace=True)
+            df.drop('path', axis=1, inplace=True)
+
+            dfs.append(Dataset.from_pandas(df))
+        
+        return dfs
+
+    if test_train:
+        return

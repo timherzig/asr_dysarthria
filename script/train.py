@@ -25,11 +25,11 @@ def main():
     if len(args.s) == 0: exit()
     s = str(args.s).split(' ')
 
-    ds = import_dataset(args.d, args.local)  # Load a list of datasets
+    ds = import_dataset(args.d, args.local, False)  # Load a list of datasets
     sds = []
 
     if(len(args.sd) > 0):
-        sds = import_dataset(args.sd, args.local)
+        sds = import_dataset(args.sd, args.local, False)
 
     def ft(train_ds, eval_ds, dir, t_args):
 
