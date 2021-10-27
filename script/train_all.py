@@ -68,6 +68,7 @@ def main():
             output_dir=dir,
             group_by_length=True,
             per_device_train_batch_size=t_args['batch_size'],
+            per_device_eval_batch_size=t_args['batch_size'],
             gradient_accumulation_steps=2,
             evaluation_strategy='steps',
             num_train_epochs=t_args['epoch'],
@@ -78,10 +79,12 @@ def main():
             learning_rate=t_args['learning_rate'],
             warmup_steps=500,
             save_total_limit=2,
+            overwrite_output_dir=True,
+            do_eval=False,
         )
 
-        eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns(
-            ['id', 'target', 'speech'])
+        # eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns(
+        #     ['id', 'target', 'speech'])
         train_ds = train_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns([
             'id', 'target', 'speech'])
 
@@ -94,48 +97,27 @@ def main():
             args=training_args,
             compute_metrics=compute_metrics,
             train_dataset=train_ds,
-            eval_dataset=eval_ds,
+            #eval_dataset=eval_ds,
             tokenizer=processor.feature_extractor,
         )
 
         trainer.train()
 
         print('---------------------------------------------------')
-        print('Evaluation: ')
+        print('Finished Training ')
 
-        return float(trainer.evaluate(batch_size=t_args['batch_size'])['eval_wer'])
+        return # float(trainer.evaluate(batch_size=t_args['batch_size'])['eval_wer'])
 
-    # def objective(trail):
-    #     lr = trail.suggest_loguniform('learning_rate', 1e-5, 3e-4)
-    #     bs = trail.suggest_int('batch_size', 8, 16, step=4)
-    #     ep = trail.suggest_int('epoch', 10, 30, step=10)
-
-    #     t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
-
-    #     dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/results/train/model/' + os.path.join(
-    #         str(date.today()), str(args.d) + ('_llo' if args.llo else '_al'))
-        
-    #     if not os.path.exists(dir):
-    #         os.makedirs(dir)
-            
-    #     return ft(tr_ds, te_ds, dir, t_args)
-
-    # study = optuna.create_study(direction='minimize')
-    # study.optimize(objective,  n_trials=10)
-
-    # print('Best WER: ' + str(study.best_trial.value))
-
-    dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/results/train/model/' + os.path.join(
-        str(date.today()), str(args.d) + ('_llo' if args.llo else '_al'))
+    dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/' + os.path.join(str(args.m), str(args.d) + ('_llo' if args.llo else '_al'))
 
     if not os.path.exists(dir):
         os.makedirs(dir)
     
     t_args = {'learning_rate': 1e-4, 'batch_size': 2, 'epoch': 30}
+    
+    ft(tr_ds, te_ds, dir, t_args)
 
-    wer = ft(tr_ds, te_ds, dir, t_args)
-
-    print('Fine tune ended with WER = ' + str(wer))
+    print('Fine tune ended')
 
 if __name__ == "__main__":
     main()

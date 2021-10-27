@@ -3,7 +3,7 @@ from .import_ua import import_ua
 from .import_torgo import import_torgo
 
 # returns a list of datasets, if len == 1, then speaker independent, if len > 1 then speaker dependent
-def import_dataset(name, local, test_train):
+def import_dataset(name, local, test_train, t='train'):
     # manually change paths
 
     if not test_train:
@@ -38,6 +38,6 @@ def import_dataset(name, local, test_train):
                 return import_hu('/work/herzig/datasets/hu_final', True)
         elif name.lower() == 'uaspeech' or name.lower() == 'ua':
             if local:
-                return import_ua('/home/tim/Documents/Datasets/uaspeech', True)
+                return import_ua('/home/tim/Documents/Datasets/uaspeech', True, t)
             else:
-                return import_ua('/work/herzig/datasets/uaspeech', True)
+                return import_ua('/work/herzig/datasets/uaspeech', True, t)
