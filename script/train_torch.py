@@ -29,20 +29,28 @@ def main():
     args = parse_arguments()
     train_ds, test_ds = import_dataset(args.d, args.local, True)
 
+    os.environ["WANDB_DISABLED"] = "true"
+    
     processor, model, device = get_model(args.l, args.m, args.local)
     tokenizer = processor.tokenizer
 
     def tokenize_function(examples):
         return tokenizer(examples['speech'], padding='max_length', truncation=True)
 
-    train_ds = train_ds.map(tokenize_function, batched=True)
-    train_ds = train_ds.remove_columns(['speech', 'id'])
-    train_ds = train_ds.rename_column('target', 'labels')
+    def prep_dataset(batch):
+        batch["input_values"] = processor(
+            batch["speech"], sampling_rate=16_000).input_values
+
+        with processor.as_target_processor():
+            batch["labels"] = tokenizer(batch["target"], padding='max_length', truncation=True).input_ids
+        return batch
+
+    train_ds = train_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(
+        ['id', 'target', 'speech'])
     train_ds.set_format('torch')
 
-    test_ds = test_ds.map(tokenize_function, batched=True)
-    test_ds = test_ds.remove_columns(['speech', 'id'])
-    test_ds = test_ds.rename_column('target', 'labels')
+    test_ds = test_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(
+        ['id', 'target', 'speech'])
     test_ds.set_format('torch')
     
     train_dataloader = DataLoader(train_ds, shuffle=True, batch_size=8)
@@ -50,7 +58,7 @@ def main():
 
     optimizer = AdamW(model.parameters(), lr=1e-4)
 
-    num_epochs = 2
+    num_epochs = 30
     num_training_steps = num_epochs * len(train_dataloader)
     lr_scheduler = get_scheduler(
         "linear",

@@ -31,6 +31,8 @@ def main():
     if(len(args.sd) > 0):
         sds = import_dataset(args.sd, args.local, False)
 
+    os.environ["WANDB_DISABLED"] = "true"
+
     def ft(train_ds, eval_ds, dir, t_args):
 
         processor, model, device = get_model(

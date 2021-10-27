@@ -29,6 +29,7 @@ def import_ua(location, test_train):
             df = pd.DataFrame(columns=['id', 'speech', 'target'])
 
             files = os.listdir(os.path.join(location, 'audio', speaker))
+
             for file in files:
                 id, block, word_id = [file.split('_')[i] for i in (0, 1, 2)]
                 word = words.loc[words['FILE NAME'] == word_id]
@@ -47,6 +48,7 @@ def import_ua(location, test_train):
             cdf = pd.DataFrame(columns=['id', 'speech', 'target'])
 
             files = os.listdir(os.path.join(location, 'audio', 'control', speaker))
+
             for file in files:
                 id, block, word_id = [file.split('_')[i] for i in (0, 1, 2)]
                 word = words.loc[words['FILE NAME'] == word_id]
@@ -58,7 +60,7 @@ def import_ua(location, test_train):
 
                 cdf = cdf.append({'id': id, 'target': target,
                             'speech': speech}, ignore_index=True)
-            
+
             dfs.append(Dataset.from_pandas(cdf))
 
         return dfs
@@ -115,3 +117,6 @@ def import_ua(location, test_train):
                         {'id': id, 'target': target, 'speech': speech}, ignore_index=True)
         
         return Dataset.from_pandas(train_ds), Dataset.from_pandas(test_ds)
+
+
+import_ua('/home/tim/Documents/Datasets/uaspeech', False)

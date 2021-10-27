@@ -1,9 +1,12 @@
+import math
 import os
 import librosa
 import warnings
+import numpy as np
 import pandas as pd
 
 from datasets import Dataset
+from transformers.file_utils import filename_to_url
 
 def speech_file_to_array(x):
     with warnings.catch_warnings():
@@ -52,7 +55,7 @@ def import_torgo(location, test_train):
                                     continue
 
                 df['speech'] = [speech_file_to_array(x) for x in df['file']]
-                
+
                 df.drop('file', axis=1, inplace=True)
 
                 dfs.append(Dataset.from_pandas(df))
@@ -60,4 +63,50 @@ def import_torgo(location, test_train):
         return dfs
 
     if test_train:
-        return
+        train_ds = pd.DataFrame(columns=['id', 'speech', 'target'])
+        test_ds = pd.DataFrame(columns=['id', 'speech', 'target'])
+
+        speakers = os.listdir(location)
+
+        for speaker in speakers:
+            df = pd.DataFrame(columns=['id', 'file', 'target'])
+            l = os.path.join(location, speaker)
+            if os.path.isdir(l):
+                sessions = os.listdir(l)
+                for session in sessions:
+                    if session[0:7] == 'Session':
+                        s = os.path.join(l, session)
+
+                        if os.path.isdir(os.path.join(s, 'wav_arrayMic')):
+                            recordings_location = os.path.join(
+                                s, 'wav_arrayMic')
+                        else:
+                            recordings_location = os.path.join(
+                                s, 'wav_headMic')
+
+                        recordings = os.listdir(recordings_location)
+                        for recording in recordings:
+                            if len(recording) == 8:
+                                if os.path.isfile(os.path.join(s, 'prompts', (recording[:-4] + '.txt'))):
+                                    sentence = open(os.path.join(
+                                        s, 'prompts', (recording[:-4] + '.txt'))).read()
+                                    if "[" in sentence or "/" in sentence or "xxx" in sentence:
+                                        continue
+                                    else:
+                                        new_row = {'id': speaker, 'file': os.path.join(
+                                            recordings_location, recording), 'target': sentence}
+                                        df = df.append(
+                                            new_row, ignore_index=True)
+                                else:
+                                    continue
+
+                df['speech'] = [speech_file_to_array(x) for x in df['file']]
+
+                df.drop('file', axis=1, inplace=True)
+
+                tr_ds, te_ds = np.split(df, [math.ceil(int(.8*len(df)))])
+
+                train_ds = train_ds.append(tr_ds)
+                test_ds = test_ds.append(te_ds)
+
+        return Dataset.from_pandas(train_ds), Dataset.from_pandas(test_ds)
