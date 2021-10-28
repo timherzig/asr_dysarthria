@@ -15,6 +15,7 @@ def speech_file_to_array(x):
 
 def import_ua(location, test_train, t):
     print('Import UASpeech dataset')
+    longest_audio = 0
     
     if not test_train:
         dfs = []
@@ -37,6 +38,8 @@ def import_ua(location, test_train, t):
                     word = words.loc[words['FILE NAME'] == (block + '_' + word_id)]
                 target = str(word.iloc[0]['WORD'])
                 speech = speech_file_to_array(os.path.join(location, 'audio', speaker, file))
+                len = librosa.get_duration(filename=os.path.join(location, 'audio', speaker, file))
+                longest_audio = len if len > longest_audio else longest_audio
 
                 df = df.append({'id': id, 'target': target,'speech': speech}, ignore_index=True)
 
@@ -63,6 +66,7 @@ def import_ua(location, test_train, t):
 
         #     dfs.append(Dataset.from_pandas(cdf))
 
+        print('Longest audio file ' + str(longest_audio))
         return dfs
 
     if test_train:
@@ -86,12 +90,17 @@ def import_ua(location, test_train, t):
                 speech = speech_file_to_array(
                     os.path.join(location, 'audio', speaker, file))
 
-                if block == ('B1' or 'B3'):
-                    train_ds = train_ds.append(
-                        {'id': id, 'target': target, 'speech': speech}, ignore_index=True)
-                elif block == 'B2':
-                    test_ds = test_ds.append(
-                        {'id': id, 'target': target, 'speech': speech}, ignore_index=True)
+                len = librosa.get_duration(filename=os.path.join(
+                    location, 'audio', speaker, file))
+                longest_audio = len if len > longest_audio else longest_audio
+
+                if len < 10:    
+                    if block == ('B1' or 'B3'):
+                        train_ds = train_ds.append(
+                            {'id': id, 'target': target, 'speech': speech}, ignore_index=True)
+                    elif block == 'B2':
+                        test_ds = test_ds.append(
+                            {'id': id, 'target': target, 'speech': speech}, ignore_index=True)
 
         # FOR CONTROL SPEAKERS
         # cspeakers = os.listdir(os.path.join(location, 'audio', 'control'))
@@ -116,4 +125,5 @@ def import_ua(location, test_train, t):
         #             test_ds = test_ds.append(
         #                 {'id': id, 'target': target, 'speech': speech}, ignore_index=True)
         
+        print('Longest audio file ' + str(longest_audio))
         return Dataset.from_pandas(train_ds) if t == 'train' else [], Dataset.from_pandas(test_ds)

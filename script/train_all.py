@@ -23,15 +23,17 @@ from import_ds.import_dataset import import_dataset
 
 def main():
     args = parse_arguments()
-
     tr_ds, te_ds = import_dataset(args.d, args.local, True)
 
     os.environ["WANDB_DISABLED"] = "true"
+    torch.cuda.empty_cache()
     
     def ft(train_ds, eval_ds, dir, t_args):
 
         processor, model, device = get_model(
             args.l, args.m, args.local)  # Load tokenizer and model
+
+        model.train()
 
         # Freeze all layers except the last two
         if args.llo:
@@ -85,8 +87,12 @@ def main():
 
         # eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns(
         #     ['id', 'target', 'speech'])
-        train_ds = train_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns([
+        t_ds = train_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns([
             'id', 'target', 'speech'])
+
+        # print('--------------------Train data shape-------------------------------')
+        # print(t_ds["input_values"].shape)
+        # print('-------------------------------------------------------------------')
 
         data_collator = DataCollatorCTCWithPadding(
             processor=processor, padding=True)
@@ -96,7 +102,7 @@ def main():
             data_collator=data_collator,
             args=training_args,
             compute_metrics=compute_metrics,
-            train_dataset=train_ds,
+            train_dataset=t_ds,
             #eval_dataset=eval_ds,
             tokenizer=processor.feature_extractor,
         )
@@ -108,12 +114,12 @@ def main():
 
         return # float(trainer.evaluate(batch_size=t_args['batch_size'])['eval_wer'])
 
-    dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/' + os.path.join(str(args.m), str(args.d) + ('_llo' if args.llo else '_al'))
+    dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/' + os.path.join(str(args.m).split('/')[4], str(args.d) + ('_llo' if args.llo else '_al'))
 
     if not os.path.exists(dir):
         os.makedirs(dir)
     
-    t_args = {'learning_rate': 1e-4, 'batch_size': 2, 'epoch': 30}
+    t_args = {'learning_rate': 1e-4, 'batch_size': 1, 'epoch': 30}
     
     ft(tr_ds, te_ds, dir, t_args)
 

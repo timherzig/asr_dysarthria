@@ -7,11 +7,15 @@ import numpy as np
 
 from datasets import Dataset
 
+longest_audio = 0
 
 def speech_file_to_array(x):
+    global longest_audio
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         speech_array, sampling_rate = librosa.load(x, sr=16_000)
+    len = librosa.get_duration(filename=x)
+    longest_audio = len if len > longest_audio else longest_audio
     return speech_array
 
 
@@ -41,7 +45,7 @@ def import_hu(location, test_train):
             df.drop('path', axis=1, inplace=True)
 
             dfs.append(Dataset.from_pandas(df))
-        
+        print('Longest audio ' + str(longest_audio))
         return dfs
 
     if test_train:
@@ -73,6 +77,7 @@ def import_hu(location, test_train):
 
             train_ds = train_ds.append(tr_ds)
             test_ds = test_ds.append(te_ds)
-
+        
+        print('Longest audio ' + str(longest_audio))
         return Dataset.from_pandas(train_ds), Dataset.from_pandas(test_ds)
 
