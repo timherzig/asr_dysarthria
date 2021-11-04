@@ -17,7 +17,7 @@ def main():
         inputs = processor(batch['speech'], sampling_rate=16_000, return_tensors="pt", padding=True)
 
         with torch.no_grad():
-            if 'wav2vec2-base-960h' in args.m:
+            if 'wav2vec2-base' in args.m:
                 logits = model(inputs.input_values.to(device)).logits
             else:
                 logits = model(inputs.input_values.to(device), attention_mask=inputs.attention_mask.to(device)).logits
