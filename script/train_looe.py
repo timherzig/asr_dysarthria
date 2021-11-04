@@ -136,8 +136,8 @@ def main():
                 
                 # TODO: change to desired output directory
 
-                dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/results/train/model/' + os.path.join(
-                    str(date.today()), str(args.d), str(speaker_dataset[0]['id']) + ('_llo' if args.llo else '_al'))
+                dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/looe/' + os.path.join(
+                    str(args.m).split('/')[4], str(args.d) + ('_llo' if args.llo else '_al'), speaker_dataset[0]['id'])
                 
                 if not os.path.exists(dir):
                     os.makedirs(dir)

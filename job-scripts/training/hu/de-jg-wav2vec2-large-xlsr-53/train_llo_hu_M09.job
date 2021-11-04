@@ -12,4 +12,4 @@
 
 conda activate /work/herzig/torch_env
 module load cuda/10.1
-python3 /work/herzig/asr_dysarthria/script/train.py -m /work/herzig/models/de-jg-wav2vec2-large-xlsr-53/ -l de -d hu -s 'M09' -llo True
+python3 /work/herzig/asr_dysarthria/script/train_looe.py -m /work/herzig/models/de-jg-wav2vec2-large-xlsr-53/ -l de -d hu -s 'M09' -llo True

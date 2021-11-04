@@ -60,11 +60,15 @@ def import_torgo(location, test_train):
                                     continue
 
                 df['speech'] = [speech_file_to_array(x) for x in df['file']]
+                
+                for x in df['file']:
+                    if librosa.get_duration(filename=x) > 10:
+                        df.drop(df[df['file'] == x].index, inplace=True)
+
                 df.drop('file', axis=1, inplace=True)
 
                 dfs.append(Dataset.from_pandas(df))
-
-        print('Longest audio ' + str(longest_audio))        
+        
         return dfs
 
     if test_train:
@@ -107,12 +111,20 @@ def import_torgo(location, test_train):
 
                 df['speech'] = [speech_file_to_array(x) for x in df['file']]
 
-                df.drop('file', axis=1, inplace=True)
+                for x in df['file']:
+                    if librosa.get_duration(filename=x) > 10:
+                        df.drop(df[df['file'] == x].index, inplace=True)
 
                 tr_ds, te_ds = np.split(df, [math.ceil(int(.8*len(df)))])
 
                 train_ds = train_ds.append(tr_ds)
                 test_ds = test_ds.append(te_ds)
         
-        print('Longest audio ' + str(longest_audio))
+        for x in train_ds['file']:
+            if librosa.get_duration(filename=x) > 10:
+                train_ds.drop(train_ds[train_ds['file'] == x].index, inplace=True)
+        
+        train_ds.drop('file', axis=1, inplace=True)
+        test_ds.drop('file', axis=1, inplace=True)
+
         return Dataset.from_pandas(train_ds), Dataset.from_pandas(test_ds)

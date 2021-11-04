@@ -12,4 +12,4 @@
 
 conda activate /work/herzig/torch_env
 module load cuda/10.1
-python3 /work/herzig/asr_dysarthria/script/train.py -m /work/herzig/models/en-fb-wav2vec2-large-robust-ft-libri-960h/ -l en -d torgo -s 'M01'
+python3 /work/herzig/asr_dysarthria/script/train_all.py -m /work/herzig/models/en-fb-wav2vec2-large-robust-ft-libri-960h/ -l en -d torgo -s 'M01'
