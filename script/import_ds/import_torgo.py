@@ -20,7 +20,7 @@ def speech_file_to_array(x):
     return speech_array
 
 
-def import_torgo(location, test_train):
+def import_torgo(location, test_train, t):
     print('Import Torgo dataset')
 
     if not test_train:
@@ -127,4 +127,4 @@ def import_torgo(location, test_train):
         train_ds.drop('file', axis=1, inplace=True)
         test_ds.drop('file', axis=1, inplace=True)
 
-        return Dataset.from_pandas(train_ds), Dataset.from_pandas(test_ds)
+        return Dataset.from_pandas(train_ds) if t=='train' else [], Dataset.from_pandas(test_ds)

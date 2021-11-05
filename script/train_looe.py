@@ -104,9 +104,6 @@ def main():
         trainer.train()
 
         print('---------------------------------------------------')
-        print('Evaluation: ')
-        print(trainer.evaluate())
-        print('---------------------------------------------------')
 
         return float(trainer.evaluate()['eval_wer'])
 
@@ -118,7 +115,7 @@ def main():
 
         def objective(trail):
             lr = trail.suggest_loguniform('learning_rate', 1e-5, 3e-4)
-            bs = trail.suggest_int('batch_size', 8, 16, step=4) if (args.d == 'torgo' or args.sd == 'torgo') else trail.suggest_int('batch_size', 4, 8, step=4)
+            bs = trail.suggest_int('batch_size', 8, 16, step=4)
             ep = trail.suggest_int('epoch', 10, 30, step=10)
 
             t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
@@ -146,7 +143,7 @@ def main():
                 t_ds = ds_wo_cur_speaker
 
                 study = optuna.create_study(direction='minimize')
-                study.optimize(objective,  n_trials=10)
+                study.optimize(objective,  n_trials=30)
 
                 print('Patient ' + e_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 
