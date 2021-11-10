@@ -82,13 +82,11 @@ def main():
             warmup_steps=500,
             save_total_limit=2,
             overwrite_output_dir=True,
-            do_eval=False,
+            do_eval=True,
         )
 
-        # eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns(
-        #     ['id', 'target', 'speech'])
-        t_ds = train_ds.map(prep_dataset, batched=True, batch_size=4).remove_columns([
-            'id', 'target', 'speech'])
+        eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(['id', 'target', 'speech'])
+        t_ds = train_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(['id', 'target', 'speech'])
 
         # print('--------------------Train data shape-------------------------------')
         # print(t_ds["input_values"].shape)
@@ -103,7 +101,7 @@ def main():
             args=training_args,
             compute_metrics=compute_metrics,
             train_dataset=t_ds,
-            #eval_dataset=eval_ds,
+            eval_dataset=eval_ds,
             tokenizer=processor.feature_extractor,
         )
 
@@ -112,18 +110,18 @@ def main():
         print('---------------------------------------------------')
         print('Finished Training ')
 
-        return # float(trainer.evaluate(batch_size=t_args['batch_size'])['eval_wer'])
+        return
 
     dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/all/' + os.path.join(str(args.m).split('/')[4], str(args.d) + ('_llo' if args.llo else '_al'))
 
     if not os.path.exists(dir):
         os.makedirs(dir)
     
-    t_args = {'learning_rate': 1e-4, 'batch_size': 1, 'epoch': 30}
+    t_args = {'learning_rate': 1e-4, 'batch_size': 16, 'epoch': 30}
     
     ft(tr_ds, te_ds, dir, t_args)
 
-    print('Fine tune ended')
+    print('Fine tune ended, you should evaluate the model now')
 
 if __name__ == "__main__":
     main()

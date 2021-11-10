@@ -60,25 +60,25 @@ def import_ua(location, test_train, t):
             dfs.append(Dataset.from_pandas(df))
 
         # FOR CONTROL SPEAKERS 
-        # cspeakers = os.listdir(os.path.join(location, 'audio', 'control'))
-        # for speaker in cspeakers:
-        #     cdf = pd.DataFrame(columns=['id', 'speech', 'target'])
+        cspeakers = os.listdir(os.path.join(location, 'audio', 'control'))
+        for speaker in cspeakers:
+            cdf = pd.DataFrame(columns=['id', 'speech', 'target'])
 
-        #     files = os.listdir(os.path.join(location, 'audio', 'control', speaker))
+            files = os.listdir(os.path.join(location, 'audio', 'control', speaker))
 
-        #     for file in files:
-        #         id, block, word_id = [file.split('_')[i] for i in (0, 1, 2)]
-        #         word = words.loc[words['FILE NAME'] == word_id]
-        #         if word.empty:
-        #             word = words.loc[words['FILE NAME'] == (block + '_' + word_id)]
-        #         target = str(word.iloc[0]['WORD'])
-        #         speech = speech_file_to_array(
-        #             os.path.join(location, 'audio', 'control', speaker, file))
+            for file in files:
+                id, block, word_id = [file.split('_')[i] for i in (0, 1, 2)]
+                word = words.loc[words['FILE NAME'] == word_id]
+                if word.empty:
+                    word = words.loc[words['FILE NAME'] == (block + '_' + word_id)]
+                target = str(word.iloc[0]['WORD'])
+                speech = speech_file_to_array(
+                    os.path.join(location, 'audio', 'control', speaker, file))
 
-        #         cdf = cdf.append({'id': id, 'target': target,
-        #                     'speech': speech}, ignore_index=True)
+                cdf = cdf.append({'id': id, 'target': target,
+                            'speech': speech}, ignore_index=True)
 
-        #     dfs.append(Dataset.from_pandas(cdf))
+            dfs.append(Dataset.from_pandas(cdf))
 
         return dfs
 
