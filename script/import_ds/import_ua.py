@@ -59,7 +59,7 @@ def import_ua(location, test_train, t):
 
             dfs.append(Dataset.from_pandas(df))
 
-        # FOR CONTROL SPEAKERS 
+        # FOR CONTROL SPEAKERS speakers
         cspeakers = os.listdir(os.path.join(location, 'audio', 'control'))
         for speaker in cspeakers:
             cdf = pd.DataFrame(columns=['id', 'speech', 'target'])
