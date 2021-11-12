@@ -112,7 +112,7 @@ def main():
 
         return
 
-    dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/all/' + os.path.join(str(args.m).split('/')[4], (str(args.d.split(' ')[0]) + str(args.d.split(' ')[1]) if ('hu' in args.d) else args.d) + ('_llo' if args.llo else '_al'))
+    dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/all/' + os.path.join(str(args.m).split('/')[4], (str(args.d.split(' ')[0]) + str(args.d.split(' ')[1] + str(args.d.split(' ')[2])) if ('hu' in args.d) else args.d) + ('_llo' if args.llo else '_al'))
 
     if not os.path.exists(dir):
         os.makedirs(dir)
