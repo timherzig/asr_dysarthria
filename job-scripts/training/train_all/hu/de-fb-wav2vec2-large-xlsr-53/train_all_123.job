@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N train-de-fb-wav2vec2-large-xlsr-53-al-123
+#$ -j y
+#$ -o /work/herzig/results/train/log/hu/all/de-fb-wav2vec2-large-xlsr-53-al-123.out
+#$ -l h_rt=50000
+#$ -l gpus=1
+#$ -l gpu_mem=22G
+#$ -l ccc=6
+#$ -m e
+#$ -M t.herzig@campus.tu-berlin.de
+
+conda activate /work/herzig/torch_env
+module load cuda/10.1
+python3 /work/herzig/asr_dysarthria/script/train_all.py -m /work/herzig/models/de-fb-wav2vec2-large-xlsr-53/ -l de -d 'hu 1 2 3'

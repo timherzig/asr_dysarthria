@@ -10,8 +10,8 @@ from import_ds.import_dataset import import_dataset
 def main():
     args = parse_arguments()
 
-    processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
     ds = import_dataset(args.d, args.local, False, t='test')  # Load a list of datasets
+    processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
 
     def evaluate(batch):
         inputs = processor(batch['speech'], sampling_rate=16_000, return_tensors="pt", padding=True)
