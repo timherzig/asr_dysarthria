@@ -106,6 +106,7 @@ def main():
         )
 
         trainer.train()
+        trainer.save_model(output_dir=dir+'/final')
 
         print('---------------------------------------------------')
         print('Finished Training ')
