@@ -129,7 +129,7 @@ def main():
     if not os.path.exists(dir):
         os.makedirs(dir)
     
-    t_args = {'learning_rate': 1e-4, 'batch_size': 8, 'epoch': 30}
+    t_args = {'learning_rate': 1e-4, 'batch_size': 16, 'epoch': 30}
     
     ft(tr_ds, te_ds, dir, t_args)
 

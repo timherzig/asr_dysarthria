@@ -4,7 +4,7 @@
 #$ -j y
 #$ -o /work/herzig/results/train/log/hu/all/ml-fb-wav2vec2-large-xlsr-53-al-132.out
 #$ -l h_rt=50000
-#$ -l gpus=1
+#$ -l gpus=2
 #$ -l gpu_mem=22G
 #$ -l ccc=6
 #$ -m e

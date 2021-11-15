@@ -4,7 +4,7 @@
 #$ -j y
 #$ -o /work/herzig/results/train/log/hu/all/de-wav2vec2-base-10k-voxpopuli-ft-al-123.out
 #$ -l h_rt=50000
-#$ -l gpus=1
+#$ -l gpus=2
 #$ -l gpu_mem=22G
 #$ -l ccc=6
 #$ -m e
