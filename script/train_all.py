@@ -107,33 +107,57 @@ def main():
         )
 
         trainer.train()
-        trainer.save_model(dir+'/final')
 
-        copy2(args.m + '/vocab.json', dir+'/final')
-        copy2(args.m + '/tokenizer_config.json', dir+'/final')
-        copy2(args.m + '/special_tokens_map.json', dir+'/final')
+        if not args.optuna:
+            trainer.save_model(dir+'/final')
 
-        if os.path.exists(args.m + '/flax_model.msgpack'):
-            copy2(args.m + '/flax_model.msgpack', dir+'/final')
-        if os.path.exists(args.m + '/feature_extractor_config.json'):
-            copy2(args.m + '/feature_extractor_config.json', dir+'/final')
+            copy2(args.m + '/vocab.json', dir+'/final')
+            copy2(args.m + '/tokenizer_config.json', dir+'/final')
+            copy2(args.m + '/special_tokens_map.json', dir+'/final')
 
+            if os.path.exists(args.m + '/flax_model.msgpack'):
+                copy2(args.m + '/flax_model.msgpack', dir+'/final')
+            if os.path.exists(args.m + '/feature_extractor_config.json'):
+                copy2(args.m + '/feature_extractor_config.json', dir+'/final')
 
-        print('---------------------------------------------------')
-        print('Finished Training ')
+            print('---------------------------------------------------')
+            print('Finished Training ')
 
-        return
+            return
+
+        elif args.optuna:
+            return float(trainer.evaluate()['eval_wer'])
+            
 
     dir = '/home/tim/Documents/training/results/' + os.path.join(str(date.today()), str(args.d) + ('_llo' if args.llo else '_al')) if args.local else '/work/herzig/fine_tuned/all/' + os.path.join(str(args.m).split('/')[4], (str(args.d.split(' ')[0]) + str(args.d.split(' ')[1] + str(args.d.split(' ')[2])) if ('hu' in args.d) else args.d) + ('_llo' if args.llo else '_al'))
 
     if not os.path.exists(dir):
         os.makedirs(dir)
     
-    t_args = {'learning_rate': 1e-4, 'batch_size': 16, 'epoch': 30}
-    
-    ft(tr_ds, te_ds, dir, t_args)
+    if not args.optuna:
+        t_args = {'learning_rate': 1e-4, 'batch_size': 16, 'epoch': 30}
+        
+        ft(tr_ds, te_ds, dir, t_args)
 
-    print('Fine tune ended, you should evaluate the model now')
+        print('Fine tune ended, you should evaluate the model now')
+    
+    elif args.optuna:
+        def objective(trail):
+            lr = trail.suggest_loguniform('learning_rate', 1e-5, 3e-4)
+            bs = trail.suggest_int('batch_size', 8, 16, step=4)
+            ep = trail.suggest_int('epoch', 10, 30, step=10)
+
+            t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
+
+            return ft(tr_ds, te_ds, dir, t_args)
+        
+        study = optuna.create_study(direction='minimize')
+        study.optimize(objective,  n_trials=30)
+
+        print('Study finished with best value ' + str(study.best_trial.value))
+        print('Parameters used:')
+        for key, val in study.best_trial.params.items():
+            print('{}: {}'.format(key, val))
 
 if __name__ == "__main__":
     main()
