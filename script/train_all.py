@@ -108,7 +108,7 @@ def main():
 
         trainer.train()
 
-        if not args.optuna:
+        if args.optuna == False:
             trainer.save_model(dir+'/final')
 
             copy2(args.m + '/vocab.json', dir+'/final')
@@ -134,14 +134,16 @@ def main():
     if not os.path.exists(dir):
         os.makedirs(dir)
     
-    if not args.optuna:
+    if args.optuna == False:
         t_args = {'learning_rate': 1e-4, 'batch_size': 16, 'epoch': 30}
         
+        if 'hu' in args.d:
+            t_args = {'learning_rate': 1e-4, 'batch_size': 8, 'epoch': 30}
+
         ft(tr_ds, te_ds, dir, t_args)
 
         print('Fine tune ended, you should evaluate the model now')
-    
-    elif args.optuna:
+    else:
         def objective(trail):
             lr = trail.suggest_loguniform('learning_rate', 1e-5, 3e-4)
             bs = trail.suggest_int('batch_size', 8, 16, step=4)

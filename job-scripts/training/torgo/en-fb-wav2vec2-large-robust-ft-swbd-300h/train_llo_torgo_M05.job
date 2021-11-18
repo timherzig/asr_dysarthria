@@ -3,7 +3,7 @@
 #$ -N train-en-fb-wav2vec2-large-robust-ft-swbd-300h-llo-M05
 #$ -j y
 #$ -o /work/herzig/results/train/log/torgo/en-fb-wav2vec2-large-robust-ft-swbd-300h/M05_llo.out
-#$ -l h_rt=60000
+#$ -l h_rt=100000
 #$ -l gpus=2
 #$ -l gpu_mem=22G
 #$ -l ccc=6
@@ -12,4 +12,4 @@
 
 conda activate /work/herzig/torch_env
 module load cuda/10.1
-python3 /work/herzig/asr_dysarthria/script/train_all.py -m /work/herzig/models/en-fb-wav2vec2-large-robust-ft-swbd-300h/ -l en -d torgo -s 'M05' -llo True
+python3 /work/herzig/asr_dysarthria/script/train_looe.py -m /work/herzig/models/en-fb-wav2vec2-large-robust-ft-swbd-300h/ -l en -d torgo -s 'M05' -llo True
