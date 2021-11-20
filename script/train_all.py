@@ -84,6 +84,7 @@ def main():
             save_total_limit=2,
             overwrite_output_dir=True,
             do_eval=True,
+            load_best_model_at_end=True
         )
 
         eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(['id', 'target', 'speech'])
@@ -111,10 +112,12 @@ def main():
         if args.optuna == False:
             trainer.save_model(dir+'/final')
 
-            copy2(args.m + '/vocab.json', dir+'/final')
-            copy2(args.m + '/tokenizer_config.json', dir+'/final')
-            copy2(args.m + '/special_tokens_map.json', dir+'/final')
-
+            if os.path.exists(args.m + '/vocab.json'):
+                copy2(args.m + '/vocab.json', dir+'/final')
+            if os.path.exists(args.m + 'tokenizer_config.json'):
+                copy2(args.m + '/tokenizer_config.json', dir+'/final')
+            if os.path.exists(args.m + '/special_tokens_map.json'):
+                copy2(args.m + '/special_tokens_map.json', dir+'/final')
             if os.path.exists(args.m + '/flax_model.msgpack'):
                 copy2(args.m + '/flax_model.msgpack', dir+'/final')
             if os.path.exists(args.m + '/feature_extractor_config.json'):

@@ -81,6 +81,7 @@ def main():
            learning_rate=t_args['learning_rate'],
            warmup_steps=500,
            save_total_limit=2,
+           load_best_model_at_end=True
         )
 
 

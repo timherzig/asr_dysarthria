@@ -8,15 +8,11 @@ import pandas as pd
 from datasets import Dataset
 from transformers.file_utils import filename_to_url
 
-longest_audio = 0
-
 def speech_file_to_array(x):
     global longest_audio
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         speech_array, sampling_rate = librosa.load(x, sr=16_000)
-    len = librosa.get_duration(filename=x)
-    longest_audio = len if len > longest_audio else longest_audio
     return speech_array
 
 
@@ -52,8 +48,8 @@ def import_torgo(location, test_train, t):
                                     if "[" in sentence or "/" in sentence or "xxx" in sentence:
                                         continue
                                     else:
-                                        new_row = {'id': speaker, 'file': os.path.join(
-                                            recordings_location, recording), 'target': sentence}
+                                        new_row = {'id': str(speaker), 'file': str(os.path.join(
+                                            recordings_location, recording)), 'target': str(sentence)}
                                         df = df.append(
                                             new_row, ignore_index=True)
                                 else:
@@ -67,8 +63,19 @@ def import_torgo(location, test_train, t):
 
                 df.drop('file', axis=1, inplace=True)
 
-                dfs.append(Dataset.from_pandas(df))
+                d = Dataset.from_pandas(df)
+
+                columns_to_remove = []
+                for f in d.features.type:
+                    if str(f.name) not in ['id', 'speech', 'target']:
+                        columns_to_remove.append(str(f.name))
+                d = d.remove_columns(columns_to_remove)
+
+                dfs.append(d)
         
+        for d in dfs:
+            print(d.features)
+
         return dfs
 
     if test_train:
