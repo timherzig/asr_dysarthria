@@ -12,4 +12,4 @@
 
 conda activate /work/herzig/torch_env
 module load cuda/10.1
-python3 /work/herzig/asr_dysarthria/script/evaluate.py -m /work/herzig/fine_tuned/all/en-fb-wav2vec2-base-960h/ua_al/checkpoint-11200/ -l en -d ua
+python3 /work/herzig/asr_dysarthria/script/evaluate.py -m /work/herzig/fine_tuned/all/en-fb-wav2vec2-base-960h/ua_al/final/ -l en -d ua
