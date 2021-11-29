@@ -13,4 +13,8 @@ def parse_arguments():
     parser.add_argument('-sd', type=str, default='', help='Name of second dataset (torgo, hu, mls_de, mls_en)')
     parser.add_argument('-optuna', type=bool, help='True if optuna is to be used', default=False)
 
+    parser.add_argument('-bs', type=int, default=8)
+    parser.add_argument('-lr', type=float, default=1e-4)
+    parser.add_argument('-epoch', type=int, default=30)
+
     return parser.parse_args()

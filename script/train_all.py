@@ -61,10 +61,11 @@ def main():
 
         def prep_dataset(batch):
             batch["input_values"] = processor(
-                batch["speech"], sampling_rate=16_000).input_values
+                batch["speech"], sampling_rate=16_000, padding=True).input_values
 
             with processor.as_target_processor():
-                batch["labels"] = processor(batch["target"]).input_ids
+                batch["labels"] = processor(
+                    batch["target"], padding=True).input_ids
             return batch
 
         training_args = TrainingArguments(
@@ -140,10 +141,7 @@ def main():
         os.makedirs(dir)
     
     if args.optuna == False:
-        t_args = {'learning_rate': 1e-4, 'batch_size': 16, 'epoch': 30}
-        
-        if 'hu' in args.d:
-            t_args = {'learning_rate': 1e-4, 'batch_size': 8, 'epoch': 30}
+        t_args = {'learning_rate': args.lr, 'batch_size': args.bs, 'epoch': args.epoch}
 
         ft(tr_ds, te_ds, dir, t_args)
 
