@@ -141,7 +141,7 @@ def main():
         os.makedirs(dir)
     
     if args.optuna == False:
-        t_args = {'learning_rate': args.lr, 'batch_size': args.bs, 'epoch': args.epoch}
+        t_args = {'learning_rate': float(args.lr), 'batch_size': int(args.bs), 'epoch': int(args.epoch)}
 
         ft(tr_ds, te_ds, dir, t_args)
 
