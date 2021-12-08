@@ -4,6 +4,10 @@ from transformers import Wav2Vec2Processor
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 
+###
+### Directly from this guide https://huggingface.co/blog/fine-tune-xlsr-wav2vec2
+###
+
 
 @dataclass
 class DataCollatorCTCWithPadding:
