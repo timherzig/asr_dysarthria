@@ -1,0 +1,31 @@
+{
+    "os": "Linux-5.11.0-38-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2021-10-25T11:58:51.202194",
+    "startedAt": "2021-10-25T11:58:48.003749",
+    "docker": null,
+    "cpu_count": 4,
+    "cuda": null,
+    "args": [
+        "-m",
+        "/home/tim/Documents/Models/pre_trained/en-fb-wav2vec2-base-960h/",
+        "-l",
+        "de",
+        "-d",
+        "hu",
+        "-local",
+        "True"
+    ],
+    "state": "running",
+    "program": "train_all.py",
+    "codePath": "script/train_all.py",
+    "git": {
+        "remote": "https://github.com/timherzig/asr_dysarthria",
+        "commit": "438147c7d2e4174f4f403ee9694cc19c5b38c8c8"
+    },
+    "email": "tim.herzig@hotmail.com",
+    "root": "/home/tim/Documents/asr_dysarthria",
+    "host": "tim-desktop",
+    "username": "tim",
+    "executable": "/usr/bin/python3"
+}

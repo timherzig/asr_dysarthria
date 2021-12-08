@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N xlsr_train_torgo_hu_al_M21
+#$ -j y
+#$ -o /work/herzig/results/train/log/hu_torgo_al/hu_M21.out
+#$ -l h_rt=60000
+#$ -l gpus=1
+#$ -l gpu_mem=22G
+#$ -l ccc=6
+#$ -m e
+#$ -M t.herzig@campus.tu-berlin.de
+
+conda activate /work/herzig/torch_env
+module load cuda/10.1
+python3 /work/herzig/asr_dysarthria/script/train.py -m 'facebook/wav2vec2-large-xlsr-53' -l de -d hu -s 'M21' -sd 'torgo'

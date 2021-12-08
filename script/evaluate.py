@@ -10,21 +10,24 @@ from import_ds.import_dataset import import_dataset
 def main():
     args = parse_arguments()
 
+    ds = import_dataset(args.d, args.local, False, t='test')  # Load a list of datasets
     processor, model, device = get_model(args.l, args.m, args.local)  # Load tokenizer and model
-    ds = import_dataset(args.d, args.local)  # Load a list of datasets
 
     def evaluate(batch):
         inputs = processor(batch['speech'], sampling_rate=16_000, return_tensors="pt", padding=True)
 
         with torch.no_grad():
-            logits = model(inputs.input_values.to(device), attention_mask=inputs.attention_mask.to(device)).logits
+            if 'base' in args.m:
+                logits = model(inputs.input_values.to(device)).logits
+            else:
+                logits = model(inputs.input_values.to(device), attention_mask=inputs.attention_mask.to(device)).logits
 
         pred_ids = torch.argmax(logits, dim=-1)
         batch['pred_text'] = processor.batch_decode(pred_ids)
         return batch
 
     for dataset in ds:
-        result = dataset.map(evaluate, batched=True, batch_size=4)
+        result = dataset.map(evaluate, batched=True, batch_size=8)
 
         predictions = [x.upper() for x in result['pred_text']]
         references = [x.upper() for x in result['target']]

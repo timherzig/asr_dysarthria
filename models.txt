@@ -1,5 +1,0 @@
-flax-community/wav2vec2-german
-facebook/wav2vec2-large-xlsr-53-german
-facebook/wav2vec2-base-960h
-facebook/wav2vec2-base-100h
-facebook/wav2vec2-large-960h-lv60-self

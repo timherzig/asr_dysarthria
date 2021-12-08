@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N train-de-jg-wav2vec2-large-xlsr-53-llo-M01
+#$ -j y
+#$ -o /work/herzig/results/train/log/hu/de-jg-wav2vec2-large-xlsr-53/M01_llo.out
+#$ -l h_rt=35000
+#$ -l gpus=1
+#$ -l gpu_mem=16G
+#$ -l ccc=6
+#$ -m e
+#$ -M t.herzig@campus.tu-berlin.de
+
+conda activate /work/herzig/torch_env
+module load cuda/10.1
+python3 /work/herzig/asr_dysarthria/script/train_looe.py -m /work/herzig/models/de-jg-wav2vec2-large-xlsr-53/ -l de -d hu -s 'M01' -llo True
