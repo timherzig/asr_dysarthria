@@ -145,7 +145,7 @@ def main():
                 t_ds = ds_wo_cur_speaker
 
                 study = optuna.create_study(direction='minimize')
-                study.optimize(objective,  n_trials=30)
+                study.optimize(objective,  n_trials=10)
 
                 print('Patient ' + e_ds[0]['id'] + ' best WER: ' + str(study.best_trial.value))
 

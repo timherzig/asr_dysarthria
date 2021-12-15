@@ -78,7 +78,7 @@ def import_ua(location, test_train, t):
         #         cdf = cdf.append({'id': id, 'target': target,
         #                     'speech': speech}, ignore_index=True)
 
-            dfs.append(Dataset.from_pandas(cdf))
+        #    dfs.append(Dataset.from_pandas(cdf))
 
         return dfs
 

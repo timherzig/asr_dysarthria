@@ -34,7 +34,7 @@ def main():
         processor, model, device = get_model(
             args.l, args.m, args.local)  # Load tokenizer and model
 
-        model.train()
+        model.train() # Model in train-mode
 
         # Freeze all layers except the last two
         if args.llo:
@@ -90,10 +90,6 @@ def main():
 
         eval_ds = eval_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(['id', 'target', 'speech'])
         t_ds = train_ds.map(prep_dataset, batched=True, batch_size=8).remove_columns(['id', 'target', 'speech'])
-
-        # print('--------------------Train data shape-------------------------------')
-        # print(t_ds["input_values"].shape)
-        # print('-------------------------------------------------------------------')
 
         data_collator = DataCollatorCTCWithPadding(
             processor=processor, padding=True)
@@ -157,7 +153,7 @@ def main():
             return ft(tr_ds, te_ds, dir, t_args)
         
         study = optuna.create_study(direction='minimize')
-        study.optimize(objective,  n_trials=30)
+        study.optimize(objective,  n_trials=10)
 
         print('Study finished with best value ' + str(study.best_trial.value))
         print('Parameters used:')

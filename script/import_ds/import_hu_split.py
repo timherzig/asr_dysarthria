@@ -14,6 +14,8 @@ def speech_file_to_array(x):
         speech_array, sampling_rate = librosa.load(x, sr=16_000)
     return speech_array
 
+def duration(x):
+    return librosa.get_duration(filename=x)
 
 def import_hu_split(location, test_train, train_split, test_split):
     print('Import HU dataset')
@@ -21,7 +23,9 @@ def import_hu_split(location, test_train, train_split, test_split):
     df = pd.read_csv(location + '/labels.csv')
     df['speech'] = [speech_file_to_array(
         os.path.join(location, 'split' + str(y), x)) for x, y in zip(df['path'], df['split'])]
-    
+    df['len'] = [duration(
+        os.path.join(location, 'split' + str(y), x)) for x, y in zip(df['path'], df['split'])]
+
     df.rename(columns={'spkID': 'id'}, inplace=True)
     df.rename(columns={'transcription': 'target'}, inplace=True)
 
