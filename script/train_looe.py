@@ -117,7 +117,7 @@ def main():
 
         def objective(trail):
             lr = trail.suggest_loguniform('learning_rate', 1e-5, 3e-4)
-            bs = trail.suggest_int('batch_size', 8, step=4)
+            bs = trail.suggest_int('batch_size', 8, 8, step=4)
             ep = trail.suggest_int('epoch', 10, 30, step=10)
 
             t_args = {'learning_rate': lr, 'batch_size': bs, 'epoch': ep}
