@@ -133,3 +133,5 @@ script/runs/
 .idea/
 
 misc/100msSilence.mp3
+
+*.pdf
